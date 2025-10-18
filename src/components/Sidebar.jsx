@@ -151,12 +151,6 @@ const Sidebar = () => {
         </nav>
       </div>
 
-      {/* Main Content */}
-      <div className="flex-1 p-4">
-        <h1 className="text-xl font-semibold">Main Content Area</h1>
-        <p className="text-gray-600">This is where your app content will go.</p>
-      </div>
-
       {/* Team Modal */}
       <TeamModal
         isOpen={modalOpen}
