@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 import axiosInstance from '../axios/axios';
 import endpoints from '../constants/endpoints';
 import axios from 'axios';
+import { Navigate, useNavigate } from 'react-router-dom';
 
 const SignupForm = () => {
   const {
@@ -13,6 +14,7 @@ const SignupForm = () => {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   const onSubmit = (data) => {
     setLoading(true);
@@ -23,7 +25,7 @@ const SignupForm = () => {
       .post('http://localhost:3000/api/v1/users.register', data)
       .then((resp) => {
         console.log('✅ Response:', resp.data);
-        // TODO: redirect to login page
+        navigate('/login', { replace: true });
       })
       .catch((err) => {
         setError(err?.response?.data?.error);
