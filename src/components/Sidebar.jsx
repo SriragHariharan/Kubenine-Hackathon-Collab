@@ -103,7 +103,7 @@ const Sidebar = () => {
           </div>
 
           {/* Other Items */}
-          <SidebarItem icon={CalendarDaysIcon} label="Calendar" isCollapsed={isCollapsed} />
+          <SidebarItem icon={CalendarDaysIcon} label="Availability" isCollapsed={isCollapsed} />
           <SidebarItem icon={BookmarkIcon} label="Pinned Messages" isCollapsed={isCollapsed} />
           <SidebarItem icon={BoltIcon} label="Shortcuts" isCollapsed={isCollapsed} />
           <SidebarItem icon={ClockIcon} label="Scheduler" isCollapsed={isCollapsed} />
