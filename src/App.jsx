@@ -3,14 +3,18 @@ import Navbar from './components/Navbar'
 import Sidebar from './components/Sidebar'
 import CalendarPage from './components/AvailabilityPage'
 import TodosPage from './components/TodosPage'
+import SignupForm from './components/SignupForm'
+import LoginForm from './components/LoginForm'
 
 function App() {
   return (
     <>
-      <Navbar />
+      {/* <Navbar />
       <Sidebar />
-      {/* <CalendarPage /> */}
-      <TodosPage />
+      <CalendarPage /> 
+      <TodosPage /> */}
+      <SignupForm />
+      <LoginForm />
     </>
   )
 }
