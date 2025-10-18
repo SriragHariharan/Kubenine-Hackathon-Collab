@@ -5,13 +5,14 @@ import LoginForm from './components/LoginForm'
 import { Route, Routes } from 'react-router-dom'
 import Layout from './layouts/Layout'
 import PrivateRoute from './layouts/ProtectedRoute'
+import PublicRoute from './layouts/PublicRoute'
 
 function App() {
   return (
     <Routes>
       {/* Public routes */}
-      <Route path="/signup" element={<SignupForm />} />
-      <Route path="/login" element={<LoginForm />} />
+      <Route path="/signup" element={<PublicRoute><SignupForm /></PublicRoute>} />
+      <Route path="/login" element={<PublicRoute><LoginForm /></PublicRoute>} />
 
       {/* Protected routes */}
       <Route
