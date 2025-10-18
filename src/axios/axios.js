@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { constants } from '../constants/constants';
 
 const API_BASE_URL = import.meta.env.VITE_API_SERVER_BASE_URL || 'http://localhost:3000';
 
@@ -9,8 +10,8 @@ const axiosInstance = axios.create({
 // Request Interceptor
 axiosInstance.interceptors.request.use(
   (config) => {
-    const authToken = localStorage.getItem('authToken') || null;
-    const userId = localStorage.getItem('userId') || null;
+    const authToken = localStorage.getItem(constants.AUTH_TOKEN) || null;
+    const userId = localStorage.getItem(constants.USER_ID) || null;
 
     config.headers['X-Auth-Token'] = authToken;
     config.headers['X-User-Id'] = userId;
@@ -24,6 +25,7 @@ axiosInstance.interceptors.request.use(
 axiosInstance.interceptors.response.use(
   (response) => response, // pass successful responses as-is
   (error) => {
+    console.log(error)
     // Extract custom error message if available
     const message =
       error?.response?.data?.error ||    // Backend error message

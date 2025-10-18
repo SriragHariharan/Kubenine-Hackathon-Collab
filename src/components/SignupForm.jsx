@@ -22,6 +22,7 @@ const SignupForm = () => {
     console.log('Form data:', data);
 
     axios
+    //TODO: Move the endpoint to constants
       .post('http://localhost:3000/api/v1/users.register', data)
       .then((resp) => {
         console.log('✅ Response:', resp.data);

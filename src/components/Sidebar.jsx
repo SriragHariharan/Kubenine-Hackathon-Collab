@@ -13,6 +13,7 @@ import {
   PlusIcon,
 } from '@heroicons/react/24/outline';
 import TeamModal from '../modals/TeamModal';
+import { Link } from 'react-router-dom';
 
 
 const teams = [
@@ -88,7 +89,7 @@ const Sidebar = () => {
 
           {/* Teams Section */}
           <div>
-            <div className="flex items-center justify-between text-gray-400 uppercase px-2 py-1 tracking-wide text-xs">
+            <Link to="/create-team" className="flex items-center justify-between text-gray-400 uppercase px-2 py-1 tracking-wide text-xs">
               <div className="flex items-center">
                 <UserGroupIcon className="w-4 h-4 mr-2" />
                 {!isCollapsed && <span>Teams</span>}
@@ -98,7 +99,7 @@ const Sidebar = () => {
                   <PlusIcon className="w-4 h-4" />
                 </button>
               )}
-            </div>
+            </Link>
             {teams.map((team, idx) => (
               <div
                 key={idx}
