@@ -1,5 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import axiosInstance from '../axios/axios';
+import endpoints from '../constants/endpoints';
+import axios from 'axios';
 
 const SignupForm = () => {
   const {
@@ -8,9 +11,25 @@ const SignupForm = () => {
     formState: { errors },
   } = useForm();
 
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
   const onSubmit = (data) => {
-    // submission logic can be added later
+    setLoading(true);
+    setError(null);
     console.log('Form data:', data);
+
+    axios
+      .post('http://localhost:3000/api/v1/users.register', data)
+      .then((resp) => {
+        console.log('✅ Response:', resp.data);
+        // TODO: redirect to login page
+      })
+      .catch((err) => {
+        setError(err?.response?.data?.error);
+        console.error('❌ Error:', err?.response?.data?.error);
+      })
+      .finally(() => setLoading(false));
   };
 
   return (
@@ -18,18 +37,14 @@ const SignupForm = () => {
       <div className="bg-black text-white rounded-lg shadow-lg w-full max-w-md p-8 space-y-6">
         <h2 className="text-2xl font-bold text-center">Create Account</h2>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          {/* Full Name */}
-          <div>
-            <label htmlFor="name" className="block mb-1 text-sm">Full Name</label>
-            <input
-              type="text"
-              id="name"
-              placeholder="Roger Smith"
-              {...register('name')}
-              className="w-full px-4 py-2 rounded bg-white text-black border border-gray-300 focus:outline-none"
-            />
+        {/* ✅ Show Error */}
+        {error && (
+          <div className="bg-red-600 text-white text-sm p-3 rounded text-center">
+            {error}
           </div>
+        )}
+
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
 
           {/* Username */}
           <div>
@@ -88,24 +103,17 @@ const SignupForm = () => {
             )}
           </div>
 
-          {/* Secret URL (optional) */}
-          {/* <div>
-            <label htmlFor="secretURL" className="block mb-1 text-sm">Secret URL (optional)</label>
-            <input
-              type="text"
-              id="secretURL"
-              placeholder="Jjwjg6gouWLXhMGKW"
-              {...register('secretURL')}
-              className="w-full px-4 py-2 rounded bg-white text-black border border-gray-300 focus:outline-none"
-            />
-          </div> */}
-
           {/* Submit Button */}
           <button
             type="submit"
-            className="w-full bg-white text-black font-semibold py-2 rounded hover:bg-gray-200 transition"
+            disabled={loading}
+            className={`w-full font-semibold py-2 rounded transition ${
+              loading
+                ? 'bg-gray-400 cursor-not-allowed'
+                : 'bg-white text-black hover:bg-gray-200'
+            }`}
           >
-            Register
+            {loading ? 'Registering...' : 'Register'}
           </button>
         </form>
       </div>
