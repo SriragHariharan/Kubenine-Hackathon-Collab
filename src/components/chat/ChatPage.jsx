@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import ChatHeader from "./ChatHeader";
 import ChatMessages from "./ChatMessage";
 import ChatInput from "./ChatInput";
@@ -6,13 +6,142 @@ import useChannelStore from "../../zustand/useChannelStore";
 import useChannelUsers from "../../hooks/useChannelUsers";
 import useOnlineMembers from "../../hooks/useOnlineMembers";
 import useAllUsers from "../../hooks/useAllUsers";
+// import useChatSocket from "../../hooks/useChatSocket";
+import useMessages from "../../hooks/useGetMessages";
+import { constants } from "../../constants/constants";
 
 const ChatPage = () => {
-    // get selected channels
-    const selectedChannel = useChannelStore((state) => state.selectedChannel);
-    console.log("selected channel:", selectedChannel)
-  
-    //get all the users in the channel
+  const selectedChannel = useChannelStore((state) => state.selectedChannel);
+  const [messages, setMessages] = useState([]);
+  const [socketStatus, setSocketStatus] = useState("disconnected");
+  const socketRef = useRef(null);
+
+  // Get token (AUTH_TOKEN) from localStorage/constants
+  const visitorToken = localStorage.getItem(constants?.AUTH_TOKEN);
+  const roomId = selectedChannel?.id;
+
+  // Set up and manage WebSocket connection
+  useEffect(() => {
+    if (!roomId || !visitorToken) return;
+    const ws = new WebSocket("ws://localhost:3000/websocket");
+    socketRef.current = ws;
+
+    let connectInterval;
+    let isAuthenticated = false;
+
+    ws.onopen = () => {
+      setSocketStatus("connected");
+      // 1. DDP connect handshake
+      ws.send(
+        JSON.stringify({
+          msg: "connect",
+          version: "1",
+          support: ["1", "pre2", "pre1"],
+        })
+      );
+    };
+
+    ws.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        // Handle DDP handshake
+        if (data.msg === "connected") {
+          // Authenticate if not done
+          if (visitorToken && !isAuthenticated) {
+            const loginMsg = {
+              msg: "method",
+              method: "login",
+              params: [{ resume: visitorToken }],
+              id: `login_${Date.now()}`,
+            };
+            ws.send(JSON.stringify(loginMsg));
+          }
+        }
+        // Respond to keep-alive
+        if (data.msg === "ping") {
+          ws.send(JSON.stringify({ msg: "pong" }));
+        }
+        // Check login response
+        if (
+          data.msg === "result" &&
+          data.result &&
+          !isAuthenticated &&
+          data.id && data.id.startsWith("login_")
+        ) {
+          isAuthenticated = true;
+          // Subscribe to channel after login
+          ws.send(
+            JSON.stringify({
+              msg: "sub",
+              id: `sub_${roomId}_${Date.now()}`,
+              name: "stream-room-messages",
+              params: [roomId, false],
+            })
+          );
+        }
+        // Handle incoming chat messages
+        if (data.msg === "changed" && data.collection === "stream-room-messages") {
+          const newMsg = data.fields?.args?.[0];
+          if (newMsg) {
+            setMessages((prev) => [...prev, newMsg]);
+          }
+        }
+      } catch (error) {
+        // Optionally console.error here
+      }
+    };
+
+    ws.onerror = () => {
+      setSocketStatus("error");
+    };
+    ws.onclose = () => {
+      setSocketStatus("disconnected");
+    };
+
+    return () => {
+      ws.close();
+      clearInterval(connectInterval);
+    };
+  }, [roomId, visitorToken]);
+
+  // Send message via WebSocket
+  const handleSendMessage = useCallback(
+    (text) => {
+      if (!socketRef.current || socketStatus !== "connected" || !roomId || !visitorToken) return;
+      const messageId = `msg_${Date.now()}`;
+      const msgBody = {
+        msg: "method",
+        method: "sendMessage",
+        id: messageId,
+        params: [
+          {
+            _id: messageId,
+            rid: roomId,
+            msg: text,
+          },
+        ],
+      };
+      socketRef.current.send(JSON.stringify(msgBody));
+    },
+    [roomId, visitorToken, socketStatus]
+  );
+
+  // Pull initial history on channel change (fallback)
+  useEffect(() => {
+    if (!roomId) return;
+    fetch(`http://localhost:3000/api/v1/channels.history?roomId=${roomId}`, {
+      headers: {
+        'X-Auth-Token': visitorToken,
+        'X-User-Id': localStorage.getItem(constants.USER_ID),
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (Array.isArray(data.messages)) setMessages(data.messages.reverse()); // Rocket.Chat returns newest first
+      });
+  }, [roomId, visitorToken]);
+
+  // get selected channels
     const { channelUsers, loading, error } = useChannelUsers(selectedChannel?.id);
 
     //TODO: get online users
@@ -60,12 +189,13 @@ const ChatPage = () => {
         onRemoveUser={handleRemoveUser}
       />
 
-      <div className="flex-1 overflow-y-auto px-4 py-2">
-        <ChatMessages />
+      <div className="flex-1 overflow-y-scroll py-2">
+        <ChatMessages messages={messages} />
       </div>
 
       <div className="border-t px-4 py-3 bg-white">
-        <ChatInput />
+        {/* Pass handleSendMessage to ChatInput */}
+        <ChatInput channelDetails={selectedChannel} onSendMessage={handleSendMessage} />
       </div>
     </div>
   );

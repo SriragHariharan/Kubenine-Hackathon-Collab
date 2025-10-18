@@ -15,7 +15,7 @@ const MessageBubble = ({ isMine, text, sender, onReply }) => {
 
   return (
     <div className={`flex items-start relative group ${isMine ? 'justify-end' : 'justify-start'}`}>
-      <div className={`max-w-xs md:max-w-md px-4 py-2 rounded-lg shadow
+      <div className={`max-w-xs md:max-w-sm px-4 py-2 rounded-lg shadow
         ${isMine ? 'bg-green-500 text-white' : 'bg-white text-gray-800'}
       `}>
         {!isMine && (

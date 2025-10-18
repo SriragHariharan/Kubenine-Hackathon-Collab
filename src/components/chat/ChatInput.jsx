@@ -1,12 +1,24 @@
 import React, { useState } from 'react';
 import { PaperAirplaneIcon, PhotoIcon } from '@heroicons/react/24/outline';
+import axiosInstance from '../../axios/axios';
+import endpoints from '../../constants/endpoints';
 
-const ChatInput = () => {
+const ChatInput = ({ channelDetails, onSendMessage }) => {
   const [message, setMessage] = useState('');
+  console.log("channel details:", channelDetails)
 
-  const handleSend = () => {
+  const handleSendMessage = () => {
     if (!message.trim()) return;
-    console.log('Sending:', message);
+    // If onSendMessage is provided, use it
+    if (typeof onSendMessage === 'function') {
+      onSendMessage(message);
+      setMessage('');
+      return;
+    }
+    // Fallback: axios API (legacy)
+    axiosInstance.post(endpoints.SEND_MESSAGE, { channel: channelDetails?.id, text: message })
+      .then(resp => console.log(resp?.data))
+      .catch(err => console.error(err));
     setMessage('');
   };
 
@@ -36,7 +48,7 @@ const ChatInput = () => {
 
       {/* Send button */}
       <button
-        onClick={handleSend}
+        onClick={handleSendMessage}
         className="bg-black text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition flex items-center gap-1"
       >
         <PaperAirplaneIcon className="h-5 w-5 rotate-45" />

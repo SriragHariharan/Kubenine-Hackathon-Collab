@@ -11,6 +11,9 @@ const endpoints = {
     ONLINE_MEMBERS: import.meta.env.VITE_API_SERVER_BASE_URL + '/api/v1/channels.online',
 
     GET_ALL_USERS: import.meta.env.VITE_API_SERVER_BASE_URL + '/api/v1/users.list',
+
+    //message endpoints
+    SEND_MESSAGE: import.meta.env.VITE_API_SERVER_BASE_URL + '/api/v1/chat.postMessage',
 }
 
 export default endpoints;
