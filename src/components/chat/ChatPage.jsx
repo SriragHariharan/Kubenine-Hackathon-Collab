@@ -9,6 +9,10 @@ import useAllUsers from "../../hooks/useAllUsers";
 // import useChatSocket from "../../hooks/useChatSocket";
 import useMessages from "../../hooks/useGetMessages";
 import { constants } from "../../constants/constants";
+import axiosInstance from "../../axios/axios";
+import axios from 'axios';
+import endpoints from "../../constants/endpoints";
+import toast from "react-hot-toast";
 
 const ChatPage = () => {
   const selectedChannel = useChannelStore((state) => state.selectedChannel);
@@ -18,7 +22,7 @@ const ChatPage = () => {
 
   // Get token (AUTH_TOKEN) from localStorage/constants
   const visitorToken = localStorage.getItem(constants?.AUTH_TOKEN);
-  const roomId = selectedChannel?.id;
+  const roomId = selectedChannel?.id || "GENERAL";
 
   // Set up and manage WebSocket connection
   useEffect(() => {
@@ -129,15 +133,15 @@ const ChatPage = () => {
   // Pull initial history on channel change (fallback)
   useEffect(() => {
     if (!roomId) return;
-    fetch(`http://localhost:3000/api/v1/channels.history?roomId=${roomId}`, {
+    // Use your axios instance (assumed imported) instead of fetch or plain axios
+    axiosInstance.get(`/api/v1/channels.history?roomId=${roomId}`, {
       headers: {
         'X-Auth-Token': visitorToken,
         'X-User-Id': localStorage.getItem(constants.USER_ID),
       },
     })
-      .then((res) => res.json())
-      .then((data) => {
-        if (Array.isArray(data.messages)) setMessages(data.messages.reverse()); // Rocket.Chat returns newest first
+      .then((res) => {
+        if (Array.isArray(res.data.messages)) setMessages(res.data.messages.reverse()); // Rocket.Chat returns newest first
       });
   }, [roomId, visitorToken]);
 
@@ -173,8 +177,20 @@ const ChatPage = () => {
   const handleRemoveUser = (userId) => {
     setAddedUserIds((prev) => prev.filter((id) => id !== userId));
   };
+  //TODO: Handle pin messages
+ 
 
-
+  const handleUnpinMessage = useCallback(
+    async (messageId) => {
+      try {
+        const resp = await axiosInstance.post(endpoints?.UNPIN_MESSAGE,{ messageId });
+        console.log("resp",resp?.data)
+      } catch (err) {
+        alert('Unpin failed: ' + err.message);
+      }
+    },
+    []
+  );
 
 
   return (
@@ -190,7 +206,11 @@ const ChatPage = () => {
       />
 
       <div className="flex-1 overflow-y-scroll py-2">
-        <ChatMessages messages={messages} />
+        <ChatMessages 
+          messages={messages} 
+          // onPin={handlePinMessage} 
+          onUnpin={handleUnpinMessage} 
+        />
       </div>
 
       <div className="border-t px-4 py-3 bg-white">

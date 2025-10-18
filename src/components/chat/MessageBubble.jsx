@@ -1,23 +1,23 @@
 import React, { useState } from 'react';
 import { EllipsisVerticalIcon } from '@heroicons/react/24/outline';
 
-const MessageBubble = ({ isMine, text, sender, onReply }) => {
+const MessageBubble = ({ isMine, text, sender, isPinned, onPin, onUnpin, messageId, onReply }) => {
   const [showOptions, setShowOptions] = useState(false);
-  const [isPinned, setIsPinned] = useState(false);
   const [isTodo, setIsTodo] = useState(false);
+  console.log("ispinned:", isPinned)
 
-  const togglePin = () => setIsPinned(prev => !prev);
   const toggleTodo = () => setIsTodo(prev => !prev);
   const handleReply = () => {
     setShowOptions(false);
     if (onReply) onReply({ text, sender });
   };
 
+  const side = isMine ? 'right' : 'left';
+  const bubbleBg = isMine ? 'bg-green-500 text-white' : 'bg-white text-gray-800';
+
   return (
     <div className={`flex items-start relative group ${isMine ? 'justify-end' : 'justify-start'}`}>
-      <div className={`max-w-xs md:max-w-sm px-4 py-2 rounded-lg shadow
-        ${isMine ? 'bg-green-500 text-white' : 'bg-white text-gray-800'}
-      `}>
+      <div className={`max-w-xs md:max-w-sm px-4 py-2 rounded-lg shadow ${bubbleBg}`}>
         {!isMine && (
           <div className="text-xs text-gray-500 mb-1 capitalize">{sender}</div>
         )}
@@ -31,7 +31,11 @@ const MessageBubble = ({ isMine, text, sender, onReply }) => {
       </div>
 
       {/* Options button */}
-      <div className="absolute top-1 -right-6 group-hover:flex hidden">
+      <div
+        className={`absolute top-1 ${
+            isMine ? '-right-6' : '-left-6'
+        } group-hover:flex hidden`}
+        >
         <button
           onClick={() => setShowOptions(prev => !prev)}
           className="text-gray-400 hover:text-black p-1"
@@ -41,11 +45,15 @@ const MessageBubble = ({ isMine, text, sender, onReply }) => {
 
         {/* Options dropdown */}
         {showOptions && (
-          <div className="absolute right-6 top-0 bg-white shadow-md border rounded w-40 z-10 text-sm">
+          <div
+            className={`absolute top-0 z-10 w-40 text-sm border rounded shadow-md bg-white ${
+              isMine ? 'right-6' : 'left-6'
+            }`}
+          >
             <button
               onClick={() => {
-                togglePin();
-                setShowOptions(false);
+                onPin(messageId);
+                // setShowOptions(false);
               }}
               className="w-full text-left px-4 py-2 hover:bg-gray-100"
             >

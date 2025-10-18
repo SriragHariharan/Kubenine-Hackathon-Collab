@@ -14,6 +14,8 @@ const endpoints = {
 
     //message endpoints
     SEND_MESSAGE: import.meta.env.VITE_API_SERVER_BASE_URL + '/api/v1/chat.postMessage',
+    PIN_MESSAGE: import.meta.env.VITE_API_SERVER_BASE_URL + '/api/v1/chat.pinMessage',
+    UNPIN_MESSAGE: import.meta.env.VITE_API_SERVER_BASE_URL + '/api/v1/chat.unpinMessage',
 }
 
 export default endpoints;
