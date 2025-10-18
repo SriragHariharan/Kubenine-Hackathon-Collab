@@ -1,14 +1,27 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ChatHeader from "./ChatHeader";
 import ChatMessages from "./ChatMessage";
 import ChatInput from "./ChatInput";
 import useChannelStore from "../../zustand/useChannelStore";
+import useChannelUsers from "../../hooks/useChannelUsers";
+import useOnlineMembers from "../../hooks/useOnlineMembers";
+import useAllUsers from "../../hooks/useAllUsers";
 
 const ChatPage = () => {
-  const totalMembers = 10;
-  const onlineMembers = 6;
-  const channelName = "general";
+    // get selected channels
+    const selectedChannel = useChannelStore((state) => state.selectedChannel);
+    console.log("selected channel:", selectedChannel)
+  
+    //get all the users in the channel
+    const { channelUsers, loading, error } = useChannelUsers(selectedChannel?.id);
 
+    //TODO: get online users
+    const { onlineMembers } = useOnlineMembers(selectedChannel?.id);
+    // console.log(onlineMembers, ": online users")
+
+    //get all users
+    const { allUsers } = useAllUsers();
+    console.log("All users:", allUsers)
   // Example users data
   const [users, setUsers] = useState([
     { id: "1", name: "Alice", active: true },
@@ -16,9 +29,13 @@ const ChatPage = () => {
     { id: "3", name: "Charlie", active: true },
     // Add more users as needed
   ]);
+  
+  const [addedUserIds, setAddedUserIds] = useState([]);
 
-  // Users currently added to the channel
-  const [addedUserIds, setAddedUserIds] = useState(["1"]);
+  useEffect(() => {
+    const initialIds = channelUsers.map((m) => m._id);
+    setAddedUserIds(initialIds);
+  }, [channelUsers]);
 
   const handleAddUser = (userId) => {
     setAddedUserIds((prev) => [...prev, userId]);
@@ -28,17 +45,16 @@ const ChatPage = () => {
     setAddedUserIds((prev) => prev.filter((id) => id !== userId));
   };
 
-  // get selected channels
-  const selectedChannel = useChannelStore((state) => state.selectedChannel);
-  console.log("selected channel:", selectedChannel)
+
+
 
   return (
     <div className="flex flex-col h-[89vh] bg-gray-50">
       <ChatHeader
         channelName={selectedChannel?.name}
-        totalMembers={totalMembers}
-        onlineMembers={onlineMembers}
-        users={users}
+        totalMembers={channelUsers}
+        onlineMembers={onlineMembers?.length}
+        users={allUsers}
         addedUserIds={addedUserIds}
         onAddUser={handleAddUser}
         onRemoveUser={handleRemoveUser}

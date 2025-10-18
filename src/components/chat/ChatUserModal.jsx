@@ -14,10 +14,10 @@ const ChatUserModal = ({ users, onClose, onAddUser, onRemoveUser, addedUserIds }
         <div className="max-h-96 overflow-y-auto">
           {users?.length === 0 && <p>No users available.</p>}
           {users?.map(user => {
-            const isAdded = addedUserIds.includes(user.id);
+            const isAdded = addedUserIds.includes(user._id);
             return (
               <div
-                key={user.id}
+                key={user._id}
                 className="flex items-center justify-between py-2 border-b last:border-none"
               >
                 <div className="flex items-center gap-3">
@@ -27,11 +27,11 @@ const ChatUserModal = ({ users, onClose, onAddUser, onRemoveUser, addedUserIds }
                     }`}
                     title={user.active ? 'Active' : 'Inactive'}
                   />
-                  <span>{user.name}</span>
+                  <span>{user.username}</span>
                 </div>
                 <button
                   onClick={() =>
-                    isAdded ? onRemoveUser(user.id) : onAddUser(user.id)
+                    isAdded ? onRemoveUser(user._id) : onAddUser(user._id)
                   }
                   className={`flex items-center gap-1 px-3 py-1 rounded text-sm font-medium ${
                     isAdded

@@ -51,8 +51,6 @@ const Sidebar = () => {
     const [modalOpen, setModalOpen] = useState(false);
     const [selectedTeam, setSelectedTeam] = useState(null);
 
-    console.log("channels:", channels)
-
     const toggleSidebar = () => {
         setIsCollapsed(!isCollapsed);
     };

@@ -7,6 +7,10 @@ const endpoints = {
     // channel endpoints
     CREATE_NEW_CHANNEL: import.meta.env.VITE_API_SERVER_BASE_URL + '/api/v1/channels.create',
     GET_ALL_CHANNELS: import.meta.env.VITE_API_SERVER_BASE_URL + '/api/v1/channels.list.joined',
+    CHANNEL_MEMBERS: import.meta.env.VITE_API_SERVER_BASE_URL + '/api/v1/channels.members',
+    ONLINE_MEMBERS: import.meta.env.VITE_API_SERVER_BASE_URL + '/api/v1/channels.online',
+
+    GET_ALL_USERS: import.meta.env.VITE_API_SERVER_BASE_URL + '/api/v1/users.list',
 }
 
 export default endpoints;

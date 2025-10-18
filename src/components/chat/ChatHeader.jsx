@@ -16,6 +16,8 @@ const ChatHeader = ({
   const handlePlusClick = () => setIsModalOpen(true);
   const handleClose = () => setIsModalOpen(false);
 
+  console.log("total members: ",totalMembers);
+
   return (
     <>
       <div className="bg-white shadow px-4 py-4 md:px-8 flex justify-between items-center border-b">
@@ -32,7 +34,7 @@ const ChatHeader = ({
           </button>
           <div className="hidden sm:flex items-center text-sm text-gray-700">
             <UserGroupIcon className="h-5 w-5 mr-1" />
-            {totalMembers} Members
+            {totalMembers?.length || 0} Members
           </div>
           <div className="flex items-center text-sm text-green-600">
             <SignalIcon className="h-5 w-5 mr-1 text-green-500" />
