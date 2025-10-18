@@ -3,6 +3,10 @@ const endpoints = {
     SIGNUP: import.meta.env.VITE_API_SERVER_BASE_URL + '/api/v1/signup',
 
     CREATE_NEW_TEAM: import.meta.env.VITE_API_SERVER_BASE_URL + '/api/v1/teams.create',
+    
+    // channel endpoints
+    CREATE_NEW_CHANNEL: import.meta.env.VITE_API_SERVER_BASE_URL + '/api/v1/channels.create',
+    GET_ALL_CHANNELS: import.meta.env.VITE_API_SERVER_BASE_URL + '/api/v1/channels.list.joined',
 }
 
 export default endpoints;

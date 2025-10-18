@@ -14,6 +14,8 @@ import {
 } from '@heroicons/react/24/outline';
 import TeamModal from '../modals/TeamModal';
 import { Link } from 'react-router-dom';
+import useChannelStore from '../zustand/useChannelStore';
+import useFetchChannels from '../hooks/useFetchChannels';
 
 
 const teams = [
@@ -41,30 +43,27 @@ const teams = [
   },
 ];
 
-const channels = [
-  { name: 'general', unread: 2 },
-  { name: 'random', unread: 0 },
-  { name: 'dev-updates', unread: 5 },
-];
 
 const Sidebar = () => {
-  const [isCollapsed, setIsCollapsed] = useState(false);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [selectedTeam, setSelectedTeam] = useState(null);
+    const { loading, error } = useFetchChannels();
+    const channels = useChannelStore((store) => store.channels);
+    const [isCollapsed, setIsCollapsed] = useState(false);
+    const [modalOpen, setModalOpen] = useState(false);
+    const [selectedTeam, setSelectedTeam] = useState(null);
 
-  const toggleSidebar = () => {
-    setIsCollapsed(!isCollapsed);
-  };
+    const toggleSidebar = () => {
+        setIsCollapsed(!isCollapsed);
+    };
 
-  const openTeamModal = (team) => {
-    setSelectedTeam(team);
-    setModalOpen(true);
-  };
+    const openTeamModal = (team) => {
+        setSelectedTeam(team);
+        setModalOpen(true);
+    };
 
-  const closeTeamModal = () => {
-    setModalOpen(false);
-    setSelectedTeam(null);
-  };
+    const closeTeamModal = () => {
+        setModalOpen(false);
+        setSelectedTeam(null);
+    };
 
   return (
     <div className="flex">
@@ -114,7 +113,7 @@ const Sidebar = () => {
 
           {/* Channels Section */}
           <div>
-            <div className="flex items-center justify-between text-gray-400 uppercase px-2 py-1 tracking-wide text-xs">
+            <Link to="/create-channel" className="flex items-center justify-between text-gray-400 uppercase px-2 py-1 tracking-wide text-xs">
               <div className="flex items-center">
                 <HashtagIcon className="w-4 h-4 mr-2" />
                 {!isCollapsed && <span>Channels</span>}
@@ -124,7 +123,7 @@ const Sidebar = () => {
                   <PlusIcon className="w-4 h-4" />
                 </button>
               )}
-            </div>
+            </Link>
             {channels.map((channel, idx) => (
               <div
                 key={idx}

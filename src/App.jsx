@@ -8,6 +8,7 @@ import PrivateRoute from './layouts/ProtectedRoute'
 import PublicRoute from './layouts/PublicRoute'
 import CreateTeam from './components/CreateTeam'
 import { Toaster } from 'react-hot-toast'
+import CreateChannel from './components/CreateChannel'
 
 function App() {
   return (
@@ -36,6 +37,17 @@ function App() {
             <PrivateRoute>
               <Layout>
                 <CreateTeam />
+              </Layout>
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/create-channel"
+          element={
+            <PrivateRoute>
+              <Layout>
+                <CreateChannel />
               </Layout>
             </PrivateRoute>
           }
