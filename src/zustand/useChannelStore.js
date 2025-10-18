@@ -4,6 +4,12 @@ import { create } from 'zustand';
 const useChannelStore = create((set) => ({
   channels: [],
 
+  selectedChannel: null,
+
+  // Set selected channel { name, id }
+  setSelectedChannel: (channel) => set({ selectedChannel: channel }),
+
+
   // Set entire channel list
   setChannels: (channelsList) => set({ channels: channelsList }),
 
@@ -21,8 +27,3 @@ const useChannelStore = create((set) => ({
 }));
 
 export default useChannelStore;
-
-
-
-//   const teams = useChannelStore((state) => state.teams);
-//   const addChannel = useChannelStore((state) => state.addChannel);

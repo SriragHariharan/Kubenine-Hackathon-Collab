@@ -13,7 +13,7 @@ import {
   PlusIcon,
 } from '@heroicons/react/24/outline';
 import TeamModal from '../modals/TeamModal';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import useChannelStore from '../zustand/useChannelStore';
 import useFetchChannels from '../hooks/useFetchChannels';
 
@@ -51,6 +51,8 @@ const Sidebar = () => {
     const [modalOpen, setModalOpen] = useState(false);
     const [selectedTeam, setSelectedTeam] = useState(null);
 
+    console.log("channels:", channels)
+
     const toggleSidebar = () => {
         setIsCollapsed(!isCollapsed);
     };
@@ -64,6 +66,16 @@ const Sidebar = () => {
         setModalOpen(false);
         setSelectedTeam(null);
     };
+
+    const navigate = useNavigate();
+    const setSelectedChannel = useChannelStore((state) => state.setSelectedChannel);
+    
+    // Function to handle channel selection
+    const handleOpenChannel = (data) => {
+        console.log("selected channel:",data)
+        setSelectedChannel({name: data?.name, id: data?.channelID});
+        navigate('/chat?channel=' + data?.channelID);
+    }
 
   return (
     <div className="flex">
@@ -128,6 +140,7 @@ const Sidebar = () => {
               <div
                 key={idx}
                 className="flex items-center justify-between hover:bg-gray-800 rounded px-2 py-1"
+                onClick={() => handleOpenChannel({name: channel.name, channelID: channel._id})}
               >
                 <span className="truncate text-gray-200">
                   {!isCollapsed && `# ${channel.name}`}

@@ -9,6 +9,7 @@ import PublicRoute from './layouts/PublicRoute'
 import CreateTeam from './components/CreateTeam'
 import { Toaster } from 'react-hot-toast'
 import CreateChannel from './components/CreateChannel'
+import ChatPage from './components/chat/ChatPage'
 
 function App() {
   return (
@@ -48,6 +49,17 @@ function App() {
             <PrivateRoute>
               <Layout>
                 <CreateChannel />
+              </Layout>
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/chat"
+          element={
+            <PrivateRoute>
+              <Layout>
+                <ChatPage />
               </Layout>
             </PrivateRoute>
           }
