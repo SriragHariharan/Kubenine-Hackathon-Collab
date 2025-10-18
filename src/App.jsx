@@ -7,9 +7,9 @@ import TodosPage from './components/TodosPage'
 function App() {
   return (
     <>
-      {/* <Navbar />
+      <Navbar />
       <Sidebar />
-      <CalendarPage /> */}
+      {/* <CalendarPage /> */}
       <TodosPage />
     </>
   )
