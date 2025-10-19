@@ -10,11 +10,15 @@ import CreateTeam from './components/CreateTeam'
 import { Toaster } from 'react-hot-toast'
 import CreateChannel from './components/CreateChannel'
 import ChatPage from './components/chat/ChatPage'
+import ShortcutJunction from './components/ShortcutsJunction'
+import Home from './components/Home'
+import ShortcutHandler from './utils/GlobalShortcutHandler'
 
 function App() {
   return (
     <>
       <Toaster position="top-right" toastOptions={{ duration: 3000 }} />
+      <ShortcutHandler />
       <Routes>
         {/* Public routes */}
         <Route path="/signup" element={<PublicRoute><SignupForm /></PublicRoute>} />
@@ -26,7 +30,29 @@ function App() {
           element={
             <PrivateRoute>
               <Layout>
+                <Home />
+              </Layout>
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/todos"
+          element={
+            <PrivateRoute>
+              <Layout>
                 <TodosPage />
+              </Layout>
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/shortcuts"
+          element={
+            <PrivateRoute>
+              <Layout>
+                <ShortcutJunction />
               </Layout>
             </PrivateRoute>
           }
