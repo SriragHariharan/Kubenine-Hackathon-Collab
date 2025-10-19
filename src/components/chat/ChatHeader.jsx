@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { PlusIcon, UserGroupIcon, SignalIcon } from '@heroicons/react/24/outline';
+import { PlusIcon, UserGroupIcon, SignalIcon, PaperClipIcon  } from '@heroicons/react/24/outline';
 import ChatUserModal from './ChatUserModal';
 import axiosInstance from '../../axios/axios';
 import endpoints from '../../constants/endpoints';
 import { useParams } from 'react-router-dom';
 import useChannelStore from '../../zustand/useChannelStore';
 import toast from 'react-hot-toast';
+import PinnedMessagesModal from '../../modals/PinnedMessagesModal';
 
 const ChatHeader = ({
   channelName,
@@ -15,6 +16,7 @@ const ChatHeader = ({
   addedUserIds,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isPinModalOpen, setIsPinModalOpen] = useState(false);
 
   const handlePlusClick = () => setIsModalOpen(true);
   const handleClose = () => setIsModalOpen(false);
@@ -50,6 +52,13 @@ const ChatHeader = ({
           >
             <PlusIcon className="h-5 w-5" />
           </button>
+        <button
+            className="bg-white border text-gray-600 p-2 rounded hover:bg-gray-100 transition"
+              onClick={() => setIsPinModalOpen(true)}
+            aria-label="View pinned messages"
+        >
+  <PaperClipIcon className="h-5 w-5" />
+</button>
           <div className="hidden sm:flex items-center text-sm text-gray-700">
             <UserGroupIcon className="h-5 w-5 mr-1" />
             {totalMembers?.length || 0} Members
@@ -70,6 +79,12 @@ const ChatHeader = ({
           addedUserIds={addedUserIds}
         />
       )}
+
+      {
+        isPinModalOpen && (
+          <PinnedMessagesModal roomId={channelID} onClose={() => setIsPinModalOpen(false)} />
+        )
+      }
     </>
   );
 };

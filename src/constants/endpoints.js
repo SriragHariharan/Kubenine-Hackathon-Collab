@@ -11,15 +11,15 @@ const endpoints = {
     ONLINE_MEMBERS: import.meta.env.VITE_API_SERVER_BASE_URL + '/api/v1/channels.online',
     ADD_USER_TO_GROUP: import.meta.env.VITE_API_SERVER_BASE_URL + '/api/v1/channels.invite',
     REMOVE_USER_FROM_GROUP: import.meta.env.VITE_API_SERVER_BASE_URL + '/api/v1/channels.kick',
-    
+
     GET_ALL_USERS: import.meta.env.VITE_API_SERVER_BASE_URL + '/api/v1/users.list',
 
 
     //message endpoints
     SEND_MESSAGE: import.meta.env.VITE_API_SERVER_BASE_URL + '/api/v1/chat.postMessage',
     PIN_MESSAGE: import.meta.env.VITE_API_SERVER_BASE_URL + '/api/v1/chat.pinMessage',
-    UNPIN_MESSAGE: import.meta.env.VITE_API_SERVER_BASE_URL + '/api/v1/chat.unpinMessage',
-
+    UNPIN_MESSAGE: import.meta.env.VITE_API_SERVER_BASE_URL + '/api/v1/chat.unPinMessage',
+    GET_PINNED_MESSAGES: import.meta.env.VITE_API_SERVER_BASE_URL + '/api/v1/chat.getPinnedMessages',
 }
 
 export default endpoints;
