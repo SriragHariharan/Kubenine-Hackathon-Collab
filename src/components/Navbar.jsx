@@ -8,6 +8,9 @@ import {
   Bars3Icon,
   XMarkIcon,
 } from '@heroicons/react/24/outline';
+import useLoginUserDetails from '../hooks/useLoginUserDetails';
+import useAuthStore from '../zustand/useAuthStore';
+import { constants } from '../constants/constants';
 
 const Navbar = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -16,6 +19,10 @@ const Navbar = () => {
   const [userStatus, setUserStatus] = useState('online');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const searchInputRef = useRef(null);
+
+  //get details of the user
+  useLoginUserDetails();
+  const userDetails = useAuthStore(store => store?.user);
 
   useEffect(() => {
     const handleKeyPress = (e) => {
@@ -52,6 +59,15 @@ const Navbar = () => {
     dnd: 'Do Not Disturb',
     offline: 'Offline',
   };
+
+  // Feature: Logout
+  const clearAuthContext = useAuthStore(store => store.logout);
+  const handleLogout = () => {
+    localStorage.removeItem(constants.AUTH_TOKEN);
+    localStorage.removeItem(constants.USER_ID);
+    clearAuthContext();
+    window.location.href = '/login';
+  }
 
   return (
     <>
@@ -146,9 +162,15 @@ const Navbar = () => {
                     />
                   </div>
                   <div className="hidden lg:block text-left">
-                    <div className="text-sm font-medium">Username</div>
+                    <div className="text-sm font-medium">{userDetails?.username}</div>
                     <div className="text-xs text-gray-400">{statusLabels[userStatus]}</div>
                   </div>
+                    <button
+                        onClick={handleLogout}
+                        className="bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600 transition"
+                    >
+                        Logout
+                    </button>
                 </div>
               </div>
             </div>
@@ -235,13 +257,20 @@ const Navbar = () => {
                       <UserCircleIcon className="w-6 h-6 text-white" />
                     </div>
                     <div
-                      className={`absolute -bottom-1 -right-1 w-3 h-3 ${statusColors[userStatus]} border-2 border-black rounded-full`}
+                      className={`absolute -bottom-1 -right-1 w-3 h-3 ${statusColors[userDetails?.status]} border-2 border-black rounded-full`}
                     />
                   </div>
                   <div>
                     <div className="text-sm font-medium">Username</div>
-                    <div className="text-xs text-gray-400">{statusLabels[userStatus]}</div>
+                    <div className="text-xs text-gray-400">{statusLabels[userDetails?.status]}</div>
                   </div>
+                  <button
+                        onClick={handleLogout}
+                        className="bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600 transition"
+                        aria-label="Logout"
+                    >
+                        Logout
+                    </button>
                 </div>
               </div>
             </div>

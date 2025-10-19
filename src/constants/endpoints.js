@@ -1,7 +1,12 @@
 const endpoints = {
+    // auth endpoints
     LOGIN: import.meta.env.VITE_API_SERVER_BASE_URL + '/api/v1/users.register',
     SIGNUP: import.meta.env.VITE_API_SERVER_BASE_URL + '/api/v1/signup',
 
+    //user endpoints 
+    GET_USER_DETAILS: import.meta.env.VITE_API_SERVER_BASE_URL + '/api/v1/users.info',
+
+    // team endpoints
     CREATE_NEW_TEAM: import.meta.env.VITE_API_SERVER_BASE_URL + '/api/v1/teams.create',
     
     // channel endpoints
