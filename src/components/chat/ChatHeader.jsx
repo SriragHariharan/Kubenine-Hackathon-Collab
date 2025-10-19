@@ -1,6 +1,11 @@
 import React, { useState } from 'react';
 import { PlusIcon, UserGroupIcon, SignalIcon } from '@heroicons/react/24/outline';
 import ChatUserModal from './ChatUserModal';
+import axiosInstance from '../../axios/axios';
+import endpoints from '../../constants/endpoints';
+import { useParams } from 'react-router-dom';
+import useChannelStore from '../../zustand/useChannelStore';
+import toast from 'react-hot-toast';
 
 const ChatHeader = ({
   channelName,
@@ -8,8 +13,6 @@ const ChatHeader = ({
   onlineMembers,
   users,
   addedUserIds,
-  onAddUser,
-  onRemoveUser,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -17,6 +20,21 @@ const ChatHeader = ({
   const handleClose = () => setIsModalOpen(false);
 
   console.log("total members: ",totalMembers);
+
+  const channelID = useChannelStore((state) => state.selectedChannel?.id);
+
+  const handleAdUserToGroup = (userId, roomId, ) => {
+    console.log(userId, roomId);
+    axiosInstance.post(endpoints?.ADD_USER_TO_GROUP, { roomId: channelID, userId })
+    .then(resp => toast.success("user added sucessfully"))
+    .catch(err => toast.error("Unable to add user to the group."));
+  };
+
+  const handleRemoveUserFromGroup = (userId) => {
+    axiosInstance.post(endpoints?.REMOVE_USER_FROM_GROUP, { roomId: channelID, userId })
+    .then(resp => toast.success("user removed sucessfully"))
+    .catch(err => toast.error("Unable to remove user from the group."));
+  };
 
   return (
     <>
@@ -47,8 +65,8 @@ const ChatHeader = ({
         <ChatUserModal
           users={users}
           onClose={handleClose}
-          onAddUser={onAddUser}
-          onRemoveUser={onRemoveUser}
+          onAddUser={handleAdUserToGroup}
+          onRemoveUser={handleRemoveUserFromGroup}
           addedUserIds={addedUserIds}
         />
       )}

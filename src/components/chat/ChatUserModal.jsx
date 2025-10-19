@@ -2,6 +2,7 @@ import React from 'react';
 import { XMarkIcon, CheckIcon, MinusIcon } from '@heroicons/react/24/outline';
 
 const ChatUserModal = ({ users, onClose, onAddUser, onRemoveUser, addedUserIds }) => {
+    console.log("first user dets",users[0])
   return (
     <div className="fixed inset-0 bg-transparent backdrop-blur-sm flex items-center justify-center z-50">
       <div className="bg-white rounded-lg shadow-lg max-w-md w-full p-6">

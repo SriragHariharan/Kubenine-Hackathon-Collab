@@ -12,13 +12,13 @@ const ChatMessages = ({ messages, onPin, onUnpin }) => {
      const handlePinMessage = (messageId) => {
         console.log(messageId)
         axiosInstance.post(endpoints?.PIN_MESSAGE,{ messageId })
-        .then(resp => console.log(resp?.data))
+        .then(resp => toast.success("Pin successful"))
         .catch(err => toast.error("Failed to pin message"));
         }
 
     const handleUnpinMessage = (messageId) => {
         axiosInstance.post(endpoints?.UNPIN_MESSAGE,{ messageId })
-        .then(resp => console.log("unpin response:",resp?.data))
+        .then(resp => toast.success("Unpin sucessful"))
         .catch(err => toast.error("Failed to unpin message"));
     }
     return (
