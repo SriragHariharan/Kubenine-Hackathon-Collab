@@ -8,6 +8,8 @@ const endpoints = {
 
     // team endpoints
     CREATE_NEW_TEAM: import.meta.env.VITE_API_SERVER_BASE_URL + '/api/v1/teams.create',
+    GET_ALL_TEAMS: import.meta.env.VITE_API_SERVER_BASE_URL + '/api/v1/teams.list',
+    GET_MEMBERS_OF_TEAM: import.meta.env.VITE_API_SERVER_BASE_URL + '/api/v1/teams.members',
     
     // channel endpoints
     CREATE_NEW_CHANNEL: import.meta.env.VITE_API_SERVER_BASE_URL + '/api/v1/channels.create',

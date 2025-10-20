@@ -12,41 +12,24 @@ import {
   BoltIcon,
   PlusIcon,
 } from '@heroicons/react/24/outline';
-import TeamModal from '../modals/TeamModal';
+import TeamModal from '../modals/AddTeamMemberModal';
 import { Link, useNavigate } from 'react-router-dom';
 import useChannelStore from '../zustand/useChannelStore';
 import useFetchChannels from '../hooks/useFetchChannels';
+import useTeams from '../hooks/useTeams';
 
-
-const teams = [
-  {
-    name: 'Team One',
-    members: [
-      { id: 1, name: 'Alice Johnson', avatarUrl: 'https://i.pravatar.cc/150?img=12', status: 'active' },
-      { id: 2, name: 'Bob Smith', avatarUrl: 'https://i.pravatar.cc/150?img=33', status: 'dnd' },
-      { id: 3, name: 'Charlie Davis', avatarUrl: 'https://i.pravatar.cc/150?img=45', status: 'away' },
-    ],
-  },
-  {
-    name: 'Team Two',
-    members: [
-      { id: 4, name: 'Diana Miller', avatarUrl: 'https://i.pravatar.cc/150?img=56', status: 'active' },
-      { id: 5, name: 'Evan Lee', avatarUrl: 'https://i.pravatar.cc/150?img=77', status: 'dnd' },
-    ],
-  },
-  {
-    name: 'Team Three',
-    members: [
-      { id: 6, name: 'Fiona Green', avatarUrl: 'https://i.pravatar.cc/150?img=88', status: 'away' },
-      { id: 7, name: 'George King', avatarUrl: 'https://i.pravatar.cc/150?img=99', status: 'active' },
-    ],
-  },
-];
 
 
 const Sidebar = () => {
+    //fetch all channels
     const { loading, error } = useFetchChannels();
     const channels = useChannelStore((store) => store.channels);
+
+    //fetch all teams
+    const {teams} = useTeams();
+    console.log("teams:", teams)
+    console.log("team ID:", teams[0]?._id);
+
     const [isCollapsed, setIsCollapsed] = useState(false);
     const [modalOpen, setModalOpen] = useState(false);
     const [selectedTeam, setSelectedTeam] = useState(null);
@@ -109,15 +92,15 @@ const Sidebar = () => {
                 </button>
               )}
             </Link>
-            {teams.map((team, idx) => (
-              <div
+            {teams?.map((team, idx) => (
+              <Link to={`/teams/${team?._id}`}
                 key={idx}
                 className="flex items-center justify-between hover:bg-gray-800 rounded px-2 py-1 cursor-pointer"
                 onClick={() => openTeamModal(team)}
               >
-                <span className="truncate">{!isCollapsed && team.name}</span>
+                <span className="truncate">{!isCollapsed && team?.name}</span>
                 {/* <EyeIcon className="w-4 h-4 text-gray-400 hover:text-gray-200" /> */}
-              </div>
+              </Link>
             ))}
           </div>
 
@@ -155,9 +138,13 @@ const Sidebar = () => {
           {/* Other Items */}
           {/* TODO: Availability option removed */}
           {/* <SidebarItem icon={CalendarDaysIcon} label="Availability" isCollapsed={isCollapsed} /> */}
-          <SidebarItem icon={BookmarkIcon} label="Pinned Messages" isCollapsed={isCollapsed} />
-          <SidebarItem icon={BoltIcon} label="Shortcuts" isCollapsed={isCollapsed} />
-          <SidebarItem icon={ClockIcon} label="Todos" isCollapsed={isCollapsed} />
+          {/* <SidebarItem icon={BookmarkIcon} label="Pinned Messages" isCollapsed={isCollapsed} /> */}
+          <Link to='/shortcuts'>
+              <SidebarItem icon={BoltIcon} label="Shortcuts" isCollapsed={isCollapsed} />
+          </Link>
+          <Link to="/todos">
+            <SidebarItem icon={ClockIcon} label="Todos" isCollapsed={isCollapsed} />
+          </Link>
           <SidebarItem icon={BellIcon} label="Notifications" isCollapsed={isCollapsed} />
         </nav>
       </div>

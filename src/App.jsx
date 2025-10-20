@@ -13,6 +13,7 @@ import ChatPage from './components/chat/ChatPage'
 import ShortcutJunction from './components/ShortcutsJunction'
 import Home from './components/Home'
 import ShortcutHandler from './utils/GlobalShortcutHandler'
+import TeamMembers from './components/TeamMembers'
 
 function App() {
   return (
@@ -31,6 +32,17 @@ function App() {
             <PrivateRoute>
               <Layout>
                 <Home />
+              </Layout>
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/teams/:teamId"
+          element={
+            <PrivateRoute>
+              <Layout>
+                <TeamMembers />
               </Layout>
             </PrivateRoute>
           }
